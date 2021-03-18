@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import VotingContract from "./contracts/Voting.json";
-import getWeb3 from "./getWeb3";
+import getWeb3 from "./getWeb3.js";
+import AdminInterface from "./assets/components/AdminInterface.js"
+import VoterInterface from "./assets/components/VoterInterface.js"
 
 import "./App.css";
+
 
 class App extends Component {
   state = { 
@@ -10,6 +13,9 @@ class App extends Component {
     accounts: null, 
     contract: null, 
     myEvents: null,
+    isOwner: false,
+    curSession: 1, 
+
   };
 
   componentDidMount = async () => {
@@ -29,7 +35,13 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      this.setState({ web3, accounts, contract });  
+      let isOwner = false;
+      let myOwner = await contract.methods.owner().call();
+      if(myOwner === accounts[0]){
+        isOwner = true; 
+      }
+
+      this.setState({ web3, accounts, contract, isOwner });  
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -38,6 +50,12 @@ class App extends Component {
       );
       console.error(error);
     }
+  };
+
+  incrementValue = async () => {
+    let myValue = this.state.myValue;
+    myValue++;
+    this.setState({ myValue });  
   };
 
 
@@ -50,11 +68,12 @@ class App extends Component {
     }
     return (
       <div className="App">
+        <div>{this.state.accounts[0]}</div>
         <h1>Good to Vote!</h1>
-
-
- 
-
+        {this.state.myValue}
+        {this.state.isOwner && <AdminInterface state={this.state}/>}
+        <VoterInterface />
+        <input type="button" value="++" onClick= { this.incrementValue } />
       </div>
     );
   }

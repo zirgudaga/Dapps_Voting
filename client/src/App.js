@@ -4,6 +4,7 @@ import getWeb3 from "./getWeb3.js";
 import AdminInterface from "./assets/components/AdminInterface.js"
 import VoterInterface from "./assets/components/VoterInterface.js"
 
+
 import "./App.css";
 
 
@@ -14,11 +15,12 @@ class App extends Component {
     contract: null, 
     myEvents: null,
     isOwner: false,
-    curSession: 1, 
-
+    sessionId: null, 
+    curState: null,
   };
 
   componentDidMount = async () => {
+
     try {
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
@@ -35,13 +37,24 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
+      // TODO à Supprimer en prod
+      console.log("Methodes : ", contract.methods);
+
       let isOwner = false;
       let myOwner = await contract.methods.owner().call();
       if(myOwner === accounts[0]){
         isOwner = true; 
       }
 
-      this.setState({ web3, accounts, contract, isOwner });  
+      let sessionId = await contract.methods.sessionId().call();
+      sessionId = parseInt(sessionId, 10)+1; // Pour l'affichage c'est plus jolie
+
+      let currentStatus = await contract.methods.currentStatus().call();
+      currentStatus = parseInt(currentStatus, 10); // Pour l'affichage c'est plus jolie
+
+
+
+      this.setState({ web3, accounts, contract, isOwner, sessionId, currentStatus });  
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -68,12 +81,10 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <div>{this.state.accounts[0]}</div>
-        <h1>Good to Vote!</h1>
-        {this.state.myValue}
+        <div>{this.state.accounts[0]} - {this.state.sessionId}</div>
+        <h1>Good to Vote!</h1>        
         {this.state.isOwner && <AdminInterface state={this.state}/>}
-        <VoterInterface />
-        <input type="button" value="++" onClick= { this.incrementValue } />
+        <VoterInterface state={this.state}/>
       </div>
     );
   }

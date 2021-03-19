@@ -1,5 +1,5 @@
 // SPDX-License-Identifier:  GPL-3.0
-pragma solidity 0.7.4;
+pragma solidity >=0.4.21 <=0.7.4;
  
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -87,7 +87,7 @@ contract Voting is Ownable {
     
     WorkflowStatus public currentStatus;
 
-    constructor(){
+    constructor () public{
         sessionId=0;
         sessions.push(Session(0,0,'NC',address(0),0,0));
         currentStatus = WorkflowStatus.RegisteringVoters;

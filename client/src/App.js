@@ -3,7 +3,7 @@ import VotingContract from "./contracts/Voting.json";
 import getWeb3 from "./getWeb3.js";
 import AdminInterface from "./assets/components/AdminInterface.js"
 import VoterInterface from "./assets/components/VoterInterface.js"
-
+import ResultVoteInterface from "./assets/components/ResultVoteInterface.js"
 
 import "./App.css";
 
@@ -15,8 +15,11 @@ class App extends Component {
     contract: null, 
     myEvents: null,
     isOwner: false,
-    sessionId: null, 
+    contractSessionId: null, 
     curState: null,
+    resultSession: null,
+    listVoters: [],
+    listProposals: [],
   };
 
   componentDidMount = async () => {
@@ -46,15 +49,16 @@ class App extends Component {
         isOwner = true; 
       }
 
-      let sessionId = await contract.methods.sessionId().call();
-      sessionId = parseInt(sessionId, 10)+1; // Pour l'affichage c'est plus jolie
+      let contractSessionId = await contract.methods.sessionId().call();
+      let selectedSessionId = contractSessionId;
+
 
       let currentStatus = await contract.methods.currentStatus().call();
-      currentStatus = parseInt(currentStatus, 10); // Pour l'affichage c'est plus jolie
+      currentStatus = parseInt(currentStatus, 10);   
 
+      this.setState({ web3, accounts, contract, isOwner, contractSessionId, selectedSessionId, currentStatus });  
 
-
-      this.setState({ web3, accounts, contract, isOwner, sessionId, currentStatus });  
+      this.startFakeWebSocket();
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -64,16 +68,98 @@ class App extends Component {
       console.error(error);
     }
   };
+  
 
-  incrementValue = async () => {
-    let myValue = this.state.myValue;
-    myValue++;
-    this.setState({ myValue });  
+
+  /* GESTION DES SELECTIONS */
+  reduceSelectedSession = async () => {
+    let { selectedSessionId } = this.state;    
+    if (selectedSessionId > 0){
+      selectedSessionId --;
+      this._updateResultSession();
+    }
+
+    this.setState({ selectedSessionId });  
+  };
+
+  increaseSelectedSession = async () => {
+    let { selectedSessionId, contractSessionId } = this.state;    
+    if (selectedSessionId < contractSessionId){
+      selectedSessionId ++;
+      this._updateResultSession();
+    }
+
+    this.setState({ selectedSessionId });  
+  };
+
+  _updateResultSession = async () => {
+    let { selectedSessionId, contract, contractSessionId, resultSession } = this.state; 
+
+    if (selectedSessionId < contractSessionId) {
+      resultSession = await contract.methods.sessions(selectedSessionId).call();
+    }else{
+      resultSession = null;
+    }
+
+    this.setState({ resultSession });  
+
+    return 1;
+  }
+  /////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+  /* GESTION DE L'ACTUALISATION */
+  refresh = async () => {
+    let { contract, contractSessionId, currentStatus, selectedSessionId, listVoters } = this.state; 
+    let context = this;
+
+    listVoters = [];
+
+    contract.getPastEvents('allEvents', {
+      fromBlock: 0,
+      toBlock: 'latest'
+    }, function(error, events){ })
+    .then(function(myEvents){
+      console.log(myEvents);
+      for(let myEvent of myEvents){
+        if (myEvent.returnValues.sessionId === selectedSessionId) {
+          if (myEvent.event === 'VoterRegistered'){
+            listVoters.push(myEvent.returnValues.voterAddress);
+          }
+        }
+        
+
+
+
+      }
+      context.setState({ listVoters });  
+    });
+
+    contractSessionId = await contract.methods.sessionId().call();
+
+    currentStatus = await contract.methods.currentStatus().call();
+    currentStatus = parseInt(currentStatus, 10);   
+    
+    this.setState({ contractSessionId, currentStatus });
+  };
+
+
+  startFakeWebSocket = async () => {
+    //this.refresh();
+    setInterval(this.refresh, 1000);
   };
 
 
 
+
   render() {
+    let affSelectedSessionId = parseInt(this.state.selectedSessionId, 10)+1; // Pour l'affichage c'est plus jolie
+
+
     if (!this.state.web3) {
       return (
         <div>Loading Web3, accounts, and contract...</div>
@@ -81,10 +167,13 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <div>{this.state.accounts[0]} - {this.state.sessionId}</div>
-        <h1>Good to Vote!</h1>        
-        {this.state.isOwner && <AdminInterface state={this.state}/>}
+        <div>Compte connecté : {this.state.accounts[0]}</div>
+        <div>Session selectionnée : <input type="button" value="-" onClick= {this.reduceSelectedSession} />{affSelectedSessionId} <input type="button" value="+" onClick= {this.increaseSelectedSession}/> </div>
+        <h1>Good to Vote!</h1>
+        <input type="button" value="UPDATE" onClick= {this.startFakeWebSocket} />        
+        <AdminInterface state={this.state}/>
         <VoterInterface state={this.state}/>
+        <ResultVoteInterface state={this.state}/>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import VotingContract from "./contracts/Voting.json";
 import getWeb3 from "./getWeb3.js";
+import {addToList, removeToList} from "./utils.js"
 import AdminInterface from "./assets/components/AdminInterface.js"
 import VoterInterface from "./assets/components/VoterInterface.js"
 import ResultVoteInterface from "./assets/components/ResultVoteInterface.js"
@@ -16,10 +17,14 @@ class App extends Component {
     myEvents: null,
     isOwner: false,
     contractSessionId: null, 
+    selectedSessionId: null,
     curState: null,
     resultSession: null,
     listVoters: [],
     listProposals: [],
+    listProposalsRefused: [],
+    listVotersHasVoted: [],
+    voteResults: null,
   };
 
   componentDidMount = async () => {
@@ -40,21 +45,15 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      // TODO à Supprimer en prod
-      console.log("Methodes : ", contract.methods);
-
       let isOwner = false;
       let myOwner = await contract.methods.owner().call();
       if(myOwner === accounts[0]){
         isOwner = true; 
       }
 
-      let contractSessionId = await contract.methods.sessionId().call();
+      let contractSessionId = parseInt(await contract.methods.sessionId().call(), 10);
       let selectedSessionId = contractSessionId;
-
-
-      let currentStatus = await contract.methods.currentStatus().call();
-      currentStatus = parseInt(currentStatus, 10);   
+      let currentStatus = parseInt(await contract.methods.currentStatus().call(), 10);
 
       this.setState({ web3, accounts, contract, isOwner, contractSessionId, selectedSessionId, currentStatus });  
 
@@ -102,6 +101,7 @@ class App extends Component {
     }
 
     this.setState({ resultSession });  
+    this.refresh();
 
     return 1;
   }
@@ -114,46 +114,91 @@ class App extends Component {
 
   /* GESTION DE L'ACTUALISATION */
   refresh = async () => {
-    let { contract, contractSessionId, currentStatus, selectedSessionId, listVoters } = this.state; 
+    let { contract, contractSessionId, 
+      currentStatus, selectedSessionId, 
+      listVoters, listProposals, 
+      listProposalsRefused, listVotersHasVoted, 
+      voteResults } = this.state; 
+
+
     let context = this;
 
     listVoters = [];
+    listProposals = [];
 
     contract.getPastEvents('allEvents', {
       fromBlock: 0,
       toBlock: 'latest'
     }, function(error, events){ })
     .then(function(myEvents){
-      console.log(myEvents);
+      //console.log(myEvents);
       for(let myEvent of myEvents){
-        if (myEvent.returnValues.sessionId === selectedSessionId) {
+        if ( parseInt(myEvent.returnValues.sessionId, 10) === selectedSessionId ) {
           if (myEvent.event === 'VoterRegistered'){
-            listVoters.push(myEvent.returnValues.voterAddress);
+            addToList(listVoters, 
+              { 
+                key: myEvent.returnValues.voterAddress, 
+                isAbleToPropose: myEvent.returnValues.isAbleToPropose
+              }
+            );
           }
+          if (myEvent.event === 'VoterUnRegistered'){
+            removeToList(listVoters, myEvent.returnValues.voterAddress);
+          }     
+          if (myEvent.event === 'ProposalRegistered'){
+            addToList(listProposals, 
+              { 
+                key: myEvent.returnValues.owner, 
+                idToSend: myEvent.returnValues.proposalId, 
+                content: myEvent.returnValues.proposal
+              }
+            );
+          }          
+          if (myEvent.event === 'ProposalUnRegistered'){
+            removeToList(listProposals, myEvent.returnValues.owner);
+            addToList(listProposalsRefused, 
+              { 
+                key: myEvent.returnValues.owner, 
+                idToSend: myEvent.returnValues.proposalId, 
+                content: myEvent.returnValues.proposal
+              }
+            );            
+          }            
+
+          if (myEvent.event === 'Voted'){
+            addToList(listVotersHasVoted, 
+              { 
+                key: myEvent.returnValues.voter, 
+                idVoted: myEvent.returnValues.proposalId, 
+              }
+            );            
+          }   
+
         }
-        
-
-
-
       }
-      context.setState({ listVoters });  
+      context.setState({ listVoters, listProposals, listVotersHasVoted});  
     });
 
-    contractSessionId = await contract.methods.sessionId().call();
+    contractSessionId = parseInt(await contract.methods.sessionId().call(), 10);
+    currentStatus = parseInt(await contract.methods.currentStatus().call(), 10);
 
-    currentStatus = await contract.methods.currentStatus().call();
-    currentStatus = parseInt(currentStatus, 10);   
-    
-    this.setState({ contractSessionId, currentStatus });
+    if ((currentStatus === 5) || (contractSessionId !== selectedSessionId)) {
+      voteResults = await contract.methods.getSessionResult(selectedSessionId).call();
+    }
+
+    this.setState({ contractSessionId, currentStatus, voteResults });
   };
 
+  goToNewSession = async () => {
+    let { selectedSessionId } = this.state; 
+    selectedSessionId ++;
+    this.setState({ selectedSessionId });
+    this.refresh();
+  };
 
   startFakeWebSocket = async () => {
-    //this.refresh();
     setInterval(this.refresh, 1000);
   };
-
-
 
 
   render() {
@@ -170,13 +215,17 @@ class App extends Component {
         <div>Compte connecté : {this.state.accounts[0]}</div>
         <div>Session selectionnée : <input type="button" value="-" onClick= {this.reduceSelectedSession} />{affSelectedSessionId} <input type="button" value="+" onClick= {this.increaseSelectedSession}/> </div>
         <h1>Good to Vote!</h1>
-        <input type="button" value="UPDATE" onClick= {this.startFakeWebSocket} />        
-        <AdminInterface state={this.state}/>
+        
+        <AdminInterface 
+          state={this.state}
+          goToNewSession={() => this.goToNewSession()}  
+        />
         <VoterInterface state={this.state}/>
         <ResultVoteInterface state={this.state}/>
       </div>
     );
   }
 };
+
 
 export default App;

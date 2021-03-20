@@ -14,12 +14,12 @@ export default class StatusDisplay extends React.Component {
     ];
 
     this.voterTable = [
-      'Veuillez patienter pendant l\'enregistrement des voteurs',
+      'Veuillez patienter pendant l\'enregistrement des autres voteurs',
       'Merci de renseigner vos propositions',
-      'Patientez pendant la validation de vos propositions',
-      'Merci de bien vouloir voter',
-      'Merci d\'attendre durant le dépouillement',
-      'Voici les résultats du vote'
+      'Patientez pendant la validation des propositions...',
+      'Phase des votes',
+      'Merci d\'attendre jusqu\'à la fin du dépouillement',
+      'Voici les résultats des votes de la session'
     ];
 
   } 
@@ -49,12 +49,27 @@ export default class StatusDisplay extends React.Component {
     }
   };
 
-  //TODO a supprimer !!
-  prevStep = async () => {
-    const { accounts, contract } = this.props.state;    
-    await contract.methods.adminChangeStatus(this.props.state.currentStatus-1).send({ from: accounts[0] });
-  };  
+  newSession = async (isWithoutVoter) => {
+    const { accounts, contract, web3 } = this.props.state;    
+    let context = this;
 
+    await contract.methods.restartSession(isWithoutVoter).send({ from: accounts[0] },
+    async (erreur, tx) => {
+      if(tx){
+        await web3.eth.getTransactionReceipt(tx, 
+          async (erreur, receipt) => {
+            if(receipt.status){
+              await context.goToNewSession();
+            }
+          }
+        )
+      }
+    })
+  };
+
+  goToNewSession = async () => {
+    this.props.goToNewSession();
+  };
 
   render(){
     return (
@@ -66,14 +81,20 @@ export default class StatusDisplay extends React.Component {
           : this.voterTable[this.props.state.currentStatus]
         }</h3>
 
-        { ((this.props.state.currentStatus > 0) && (this.props.userType === "Admin")) &&
-          <input type="button" value="Etape précédante" onClick= { this.prevStep } /> 
-        }        
         { ((this.props.state.currentStatus < this.adminTable.length-1) && (this.props.userType === "Admin")) &&
           <input type="button" value="Etape suivante" onClick= { this.nextStep } /> 
         }
+
+        { ((this.props.state.currentStatus === 5) && (this.props.userType === "Admin")) &&
+          <div>
+            <input type="button" value="Nouvelle session (avec les électeurs)" onClick= { () => this.newSession(false) } /> 
+            <input type="button" value="Nouvelle session (sans électeurs)" onClick= { () => this.newSession(true) } /> 
+          </div>
+        }
+
 
       </div>
     );
   }
 }
+

@@ -65,12 +65,12 @@ contract Voting is Ownable {
         VotesTallied
     }
  
-    event VoterRegistered(address voterAddress, uint sessionId);
+    event VoterRegistered(address voterAddress, bool isAbleToPropose, uint sessionId);
     event VoterUnRegistered(address voterAddress, uint sessionId);                                              // Feature_V2     
     event ProposalsRegistrationStarted(uint sessionId);
     event ProposalsRegistrationEnded(uint sessionId);
-    event ProposalRegistered(uint proposalId, uint sessionId);
-    event ProposalUnRegistered(uint proposalId, uint sessionId);                                                // Feature_V2    
+    event ProposalRegistered(uint proposalId, string proposal, address owner, uint sessionId);
+    event ProposalUnRegistered(uint proposalId, string proposal, address owner, uint sessionId);                                                // Feature_V2    
     event VotingSessionStarted(uint sessionId);
     event VotingSessionEnded(uint sessionId);
     event Voted (address voter, uint proposalId, uint sessionId);
@@ -92,6 +92,7 @@ contract Voting is Ownable {
         sessions.push(Session(0,0,'NC',address(0),0,0));
         currentStatus = WorkflowStatus.RegisteringVoters;
         proposals.push(Proposal('Blank Vote', 0, address(0), true));
+        emit ProposalRegistered(0, 'Blank Vote', address(0),sessionId);            
     }
     
     
@@ -118,14 +119,14 @@ contract Voting is Ownable {
         voters[_addressVoter] = Voter(true, false, 0, _isAbleToPropose, false);
         addressToSave.push(_addressVoter);
 
-        emit VoterRegistered(_addressVoter, sessionId);
+        emit VoterRegistered(_addressVoter, _isAbleToPropose, sessionId);
     }
     
     /**
      * @dev Remove a voter
      * @param _addressVoter address of new voter
      */
-    function removedVoter(address _addressVoter) external onlyOwner{
+    function removeVoter(address _addressVoter) external onlyOwner{
         require(currentStatus == WorkflowStatus.RegisteringVoters, "Not RegisteringVoters Status");        
         require(voters[_addressVoter].isRegistered, "Voter not registred");
         
@@ -163,7 +164,7 @@ contract Voting is Ownable {
         
         uint proposalId = proposals.length-1;
 
-        emit ProposalRegistered(proposalId, sessionId);
+        emit ProposalRegistered(proposalId, _content, msg.sender, sessionId);
     }    
 
     /**
@@ -188,7 +189,7 @@ contract Voting is Ownable {
       
         proposals[_proposalId].isActive = false;
 
-        emit ProposalUnRegistered(_proposalId, sessionId);
+        emit ProposalUnRegistered(_proposalId, proposals[_proposalId].description, proposals[_proposalId].author, sessionId);
     }        
     
     /**
@@ -277,8 +278,29 @@ contract Voting is Ownable {
             sessions[sessionId].totalVotes
         );
     }
+
+    /**
+     * @dev Send Session
+     * @param _sessionId index of session     
+     * @return winningProposalName description of proposal
+     * @return proposer author of proposal     
+     * @return nbVotes number of votes
+     * @return totalVotes number of totals votes
+     */
+    function getSessionResult(uint16 _sessionId) external view returns(string memory winningProposalName, address proposer, uint16 nbVotes, uint16 totalVotes){
+        require(sessionId >= _sessionId, "Session not exist"); 
+        return (
+            sessions[_sessionId].winningProposalName,
+            sessions[_sessionId].proposer,
+            sessions[_sessionId].nbVotes,
+            sessions[_sessionId].totalVotes
+        );
+
+
+
+    }
     
-     /**
+    /**
      * @dev Restart session
      * @param deleteVoters delete voters
      * @notice Feature_V2  
@@ -287,6 +309,7 @@ contract Voting is Ownable {
         require(currentStatus == WorkflowStatus.VotesTallied, "Tallied not finished"); 
   
         delete(proposals);
+        
         if(deleteVoters){
             for(uint16 i; i<addressToSave.length; i++){
                 delete(voters[addressToSave[i]]);
@@ -297,6 +320,9 @@ contract Voting is Ownable {
             for(uint16 i; i<addressToSave.length; i++){
                 voters[addressToSave[i]].hasVoted=false;
                 voters[addressToSave[i]].hasProposed=false;   
+                if(voters[addressToSave[i]].isRegistered){
+                    emit VoterRegistered(addressToSave[i], voters[addressToSave[i]].isAbleToPropose, sessionId+1);
+                }      
             }
         }    
     
@@ -304,8 +330,9 @@ contract Voting is Ownable {
         sessions.push(Session(0,0,'NC',address(0),0,0));
         currentStatus = WorkflowStatus.RegisteringVoters;
         proposals.push(Proposal('Blank Vote', 0, address(0), true));      
-        
+
         emit SessionRestart(sessionId);
+        emit ProposalRegistered(0, 'Blank Vote', address(0), sessionId);    
     }
  
 } 

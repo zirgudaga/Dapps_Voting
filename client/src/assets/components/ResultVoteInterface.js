@@ -6,7 +6,7 @@ export default class ResultVoteInterface extends React.Component {
     if(this.props.state.voteResults === null){
       return (<div></div>);
     }
-    let affSelectedSessionId = parseInt(this.props.state.selectedSessionId, 10)+1; // Pour l'affichage c'est plus jolie
+    let affSelectedSessionId = parseInt(this.props.state.selectedSessionId, 10)+1;
     if ((this.props.state.contractSessionId > this.props.state.selectedSessionId) || (this.props.state.currentStatus === 5)){
       return (
           <div className="container">

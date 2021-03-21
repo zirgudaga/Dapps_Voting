@@ -90,7 +90,6 @@ export default class StatusDisplay extends React.Component {
           </div>
         }
 
-
       </div>
     );
   }

@@ -14,7 +14,6 @@ export default class AdminInterface extends React.Component {
   addVoter = async () => {
     const { accounts, contract, web3 } = this.props.state;
     const { isAbbleToPropose } = this.state;  
-
     if(this.newVoter.value.trim() !== '')
     {
       await contract.methods.addVoter(this.newVoter.value, isAbbleToPropose).send({ from: accounts[0] },

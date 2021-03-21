@@ -11,7 +11,7 @@ export default class Navbar extends React.Component {
     }
 
     render() {
-        let affSelectedSessionId = parseInt(this.props.state.selectedSessionId, 10)+1; // Pour l'affichage c'est plus jolie
+        let affSelectedSessionId = parseInt(this.props.state.selectedSessionId, 10)+1; 
         return (  
             <nav className="navbar navbar-expand-lg fixed-top navbar-light bg-light mb-3 py-0">
                 <div className="container">

@@ -57,9 +57,8 @@ export default class VoterInterface extends React.Component {
     let hasVoted = isInList(this.props.state.listVotersHasVoted, this.props.state.accounts[0]);
     let indexVoter = this.props.state.listVoters.findIndex(x => x.key === this.props.state.accounts[0]);
     let isAbleToPropose = false;
-    if(indexVoter != -1) {
+    if(indexVoter !== -1) {
       isAbleToPropose = this.props.state.listVoters[indexVoter].isAbleToPropose;
-
     } else {
       isAbleToPropose = false;
     }

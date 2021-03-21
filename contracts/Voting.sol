@@ -91,22 +91,10 @@ contract Voting is Ownable {
         sessionId=0;
         sessions.push(Session(0,0,'NC',address(0),0,0));
         currentStatus = WorkflowStatus.RegisteringVoters;
-        proposals.push(Proposal('Blank Vote', 0, address(0), true));
-        emit ProposalRegistered(0, 'Blank Vote', address(0),sessionId);            
+        proposals.push(Proposal('Vote blanc', 0, address(0), true));
+        emit ProposalRegistered(0, 'Vote blanc', address(0),sessionId);            
     }
-    
-    
-    /**
-     * @dev Force change of status
-     * @param newStatus forced
-     */
-    function adminChangeStatus(uint8 newStatus) external onlyOwner{
-        // TODO Clean after testing
-        emit WorkflowStatusChange(WorkflowStatus(currentStatus), WorkflowStatus(newStatus), sessionId);
-        currentStatus = WorkflowStatus(newStatus);
-    }
-    
-    
+
     /**
      * @dev Add a voter
      * @param _addressVoter address of new voter
@@ -232,8 +220,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded, sessionId);
         emit VotingSessionEnded(sessionId);     
     }       
-    
-    
+      
     /**
      * @dev Tallied votes
      */
@@ -329,10 +316,9 @@ contract Voting is Ownable {
         sessionId++;
         sessions.push(Session(0,0,'NC',address(0),0,0));
         currentStatus = WorkflowStatus.RegisteringVoters;
-        proposals.push(Proposal('Blank Vote', 0, address(0), true));      
+        proposals.push(Proposal('Vote blanc', 0, address(0), true));      
 
         emit SessionRestart(sessionId);
-        emit ProposalRegistered(0, 'Blank Vote', address(0), sessionId);    
+        emit ProposalRegistered(0, 'Vote blanc', address(0), sessionId);    
     }
- 
 } 

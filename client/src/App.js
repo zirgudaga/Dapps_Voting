@@ -70,9 +70,7 @@ class App extends Component {
     }
   };
   
-
-
-  /* GESTION DES SELECTIONS */
+  /* GESTION DES SESSIONS */
   reduceSelectedSession = async () => {
     let { selectedSessionId } = this.state;    
     if (selectedSessionId > 0){
@@ -107,13 +105,7 @@ class App extends Component {
 
     return 1;
   }
-  /////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
+  
   /* GESTION DE L'ACTUALISATION */
   refresh = async () => {
     let { contract, contractSessionId, 
@@ -133,7 +125,6 @@ class App extends Component {
       toBlock: 'latest'
     }, function(error, events){ })
     .then(function(myEvents){
-      //console.log(myEvents);
       for(let myEvent of myEvents){
         if ( parseInt(myEvent.returnValues.sessionId, 10) === selectedSessionId ) {
           if (myEvent.event === 'VoterRegistered'){
@@ -204,7 +195,6 @@ class App extends Component {
 
 
   render() {
- 
     if (!this.state.web3) {
       return (
         <div>Loading Web3, accounts, and contract...</div>

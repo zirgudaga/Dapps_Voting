@@ -6,14 +6,17 @@ export default class ResultVoteInterface extends React.Component {
     if(this.props.state.voteResults === null){
       return (<div></div>);
     }
-
+    let affSelectedSessionId = parseInt(this.props.state.selectedSessionId, 10)+1; // Pour l'affichage c'est plus jolie
     if ((this.props.state.contractSessionId > this.props.state.selectedSessionId) || (this.props.state.currentStatus === 5)){
       return (
-          <div>
-            Proposition retenue : {this.props.state.voteResults.winningProposalName} <br/>
-            Nombre de votes : {this.props.state.voteResults.nbVotes} <br/>
-            Total des votes : {this.props.state.voteResults.totalVotes} <br/>
-
+          <div className="container">
+            <div className="col col-lg-2"></div>
+            <div className="card col-md-auto mb-5">
+              <h3>Résultat des votes de la session {affSelectedSessionId}</h3>
+                <p className="text-success fw-bold">{this.props.state.voteResults.winningProposalName}</p>
+                <p>Nombre de votes : {this.props.state.voteResults.nbVotes} / {this.props.state.voteResults.totalVotes}</p>
+            </div>
+            <div className="col col-lg-2"></div>
           </div>
       );
     }

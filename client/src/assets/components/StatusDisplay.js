@@ -5,26 +5,24 @@ export default class StatusDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.adminTable = [
-      'Registering Voters',
-      'Proposals Registration Started',
-      'Proposals Registration Ended',
-      'Voting Session Started',
-      'Voting Session Ended',
-      'Votes Tallied'
+      'Enregistrement des voteurs',
+      'Début de l\'enregistrement des propositions',
+      'Fin de l\'enregistrement des propositions',
+      'Début des votes',
+      'Fin des votes',
+      'Dépouillement'
     ];
 
     this.voterTable = [
-      'Veuillez patienter pendant l\'enregistrement des autres voteurs',
-      'Merci de renseigner vos propositions',
-      'Patientez pendant la validation des propositions...',
+      'Enregistrement des autres voteurs',
+      'Enregistrement des propositions',
+      'Validation des propositions...',
       'Phase des votes',
-      'Merci d\'attendre jusqu\'à la fin du dépouillement',
+      'En attente du dépouillement',
       'Voici les résultats des votes de la session'
     ];
 
   } 
-
-
 
   nextStep = async () => {
     const { accounts, contract } = this.props.state;    
@@ -73,22 +71,22 @@ export default class StatusDisplay extends React.Component {
 
   render(){
     return (
-      <div>
-
-        <h3>{       
+      <div className="d-flex align-items-center justify-content-center">
+        
+        <button type="button" className="btn btn-light disabled">{       
           (this.props.userType === "Admin") 
           ? this.adminTable[this.props.state.currentStatus]     
           : this.voterTable[this.props.state.currentStatus]
-        }</h3>
+        }</button>
 
         { ((this.props.state.currentStatus < this.adminTable.length-1) && (this.props.userType === "Admin")) &&
-          <input type="button" value="Etape suivante" onClick= { this.nextStep } /> 
+          <input type="button" className="btn btn-primary m-3" value="Etape suivante" onClick= { this.nextStep } /> 
         }
 
         { ((this.props.state.currentStatus === 5) && (this.props.userType === "Admin")) &&
           <div>
-            <input type="button" value="Nouvelle session (avec les électeurs)" onClick= { () => this.newSession(false) } /> 
-            <input type="button" value="Nouvelle session (sans électeurs)" onClick= { () => this.newSession(true) } /> 
+            <input type="button" className="btn btn-success mr-3" value="Nouvelle session (avec les voteurs)" onClick= { () => this.newSession(false) } /> 
+            <input type="button" className="btn btn-success" value="Nouvelle session (sans voteurs)" onClick= { () => this.newSession(true) } /> 
           </div>
         }
 

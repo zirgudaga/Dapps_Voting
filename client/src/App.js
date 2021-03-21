@@ -5,6 +5,8 @@ import {addToList, removeToList} from "./utils.js"
 import AdminInterface from "./assets/components/AdminInterface.js"
 import VoterInterface from "./assets/components/VoterInterface.js"
 import ResultVoteInterface from "./assets/components/ResultVoteInterface.js"
+import Navbar from "./assets/components/Navbar.js"
+import MyFooter from "./assets/components/Footer.js"
 
 import "./App.css";
 
@@ -202,9 +204,7 @@ class App extends Component {
 
 
   render() {
-    let affSelectedSessionId = parseInt(this.state.selectedSessionId, 10)+1; // Pour l'affichage c'est plus jolie
-
-
+ 
     if (!this.state.web3) {
       return (
         <div>Loading Web3, accounts, and contract...</div>
@@ -212,16 +212,21 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <div>Compte connecté : {this.state.accounts[0]}</div>
-        <div>Session selectionnée : <input type="button" value="-" onClick= {this.reduceSelectedSession} />{affSelectedSessionId} <input type="button" value="+" onClick= {this.increaseSelectedSession}/> </div>
-        <h1>Good to Vote!</h1>
-        
+        <Navbar 
+          state={this.state}
+          reduceSelectedSession={() => this.reduceSelectedSession()}
+          increaseSelectedSession={() => this.increaseSelectedSession()}
+        />
+        <div className="d-inline-flex mt-5 p-5">
+          <h1>Bienvenue sur votre Dapps Voting !</h1>
+        </div>
         <AdminInterface 
           state={this.state}
           goToNewSession={() => this.goToNewSession()}  
         />
         <VoterInterface state={this.state}/>
         <ResultVoteInterface state={this.state}/>
+        <MyFooter />
       </div>
     );
   }

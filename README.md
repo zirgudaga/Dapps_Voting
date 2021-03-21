@@ -101,6 +101,7 @@ newStatus);
 ## Contract actuel
 
 Le smart contract actuel définit les évenements suivants : 
+```
 event VoterRegistered(address voterAddress, bool isAbleToPropose, uint sessionId);
 event VoterUnRegistered(address voterAddress, uint sessionId);                          
 event ProposalsRegistrationStarted(uint sessionId);
@@ -113,4 +114,5 @@ event Voted (address voter, uint proposalId, uint sessionId);
 event VotesTallied(uint sessionId);
 event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus, uint sessionId);
 event SessionRestart(uint sessionId);
+```
 

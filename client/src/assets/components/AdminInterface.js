@@ -131,7 +131,7 @@ export default class AdminInterface extends React.Component {
               {this.props.state.listProposals.length > 0 
               ?
                 this.props.state.listProposals.map((propal) => (
-                  <div key={propal.key}> {parseInt(propal.idToSend,10)+1} - {propal.content}
+                  <div key={propal.key} className="mb-2"> {parseInt(propal.idToSend,10)+1} - {propal.content}
                   {this.props.state.currentStatus === 2 && <input type="button" className="btn btn-danger ml-2" value="Retirer" onClick= { () => this.removeProposal(propal.idToSend) } />}
                   </div>
                 ))           
@@ -142,7 +142,7 @@ export default class AdminInterface extends React.Component {
               {this.props.state.listProposalsRefused.length > 0 
               ?
                 this.props.state.listProposalsRefused.map((propal) => (
-                  <div key={propal.key}> {parseInt(propal.idToSend,10)+1} - {propal.content}
+                  <div key={propal.key} className="mb-2"> {parseInt(propal.idToSend,10)+1} - {propal.content}
                   </div>
                 ))           
               : 

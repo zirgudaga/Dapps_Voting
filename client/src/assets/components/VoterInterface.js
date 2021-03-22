@@ -113,7 +113,7 @@ export default class VoterInterface extends React.Component {
                 <div>
                   <h3> Liste des propositions </h3>
                   {this.props.state.listProposals.map((propal) => (
-                    <div key={propal.key}> {parseInt(propal.idToSend,10)+1} - {propal.content}
+                    <div key={propal.key} className="mb-2"> {parseInt(propal.idToSend,10)+1} - {propal.content}
                       <input type="button" className="btn btn-success ml-2" value="Voter" onClick= { () => this.addVote(propal.idToSend)}/>
                     </div>
                     ))   

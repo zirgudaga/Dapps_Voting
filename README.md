@@ -1,16 +1,22 @@
-# Défi 1 - Alyra - parcours Développeur.se Blockchain
+# Défi - Alyra - Parcours Développeur.se Blockchain
 
 📌  Créer une Dapps de vote construite autour du smart contract voting_contract
 
 ## Démarrage
 
 Les instructions suivantes vous permettrons d'installer le projet :
-Afin de cloner le projet, entrez la ligne de commande suivante : npm clone https://github.com/zirgudaga/Dapps_Voting
-Pour lancer le déploiement de la Dapps, modifiez le fichier truffle-config.js avec le network approprié.
-Lancez ensuite la migration avec la commande : truffle migrate --network 'votre network'
-Dans le dossier du projet, effectuez la commande : npm install
-Effectuez ensuite la commande suivante dans le fichier client : npm run start
-Rendez-vous sur votre http://localhost:3000/ pour interagir avec votre contrat.
+- Afin de cloner le projet, entrez la ligne de commande suivante : npm clone https://github.com/zirgudaga/Dapps_Voting
+- Pour lancer le déploiement de la Dapps, modifiez le fichier truffle-config.js avec le network approprié.
+- Lancez ensuite la migration avec la commande : truffle migrate --network 'votre network'
+- Afin d'installer les dépendances de test et de solidity, dans le dossier racince du projet, effectuez la commande : npm install 
+- Afin d'installer les dépendances react, dans le dossier client du projet, effectuez la commande : npm install
+- Effectuez ensuite la commande suivante dans le dossier client : npm run start
+- Rendez-vous sur votre http://localhost:3000/ pour interagir avec votre contrat
+
+## Guide d'utilisation
+
+Vous trouverez une vidéo de présentation du projet sur l'URL suivant : [Vidéo de démo](https://www.youtube.com/watch?v=7WBrRZMVOw8)
+
 
 ## Scénario du projet
 

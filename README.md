@@ -2,6 +2,12 @@
 
 📌  Créer une Dapps de vote construite autour du smart contract voting_contract
 
+## Contributeurs
+
+- [Hélène Bunel](https://github.com/Helene-mb)
+- [Édouard Vahanian](https://github.com/edvahn)
+- [Daniel Villa Monteiro](https://github.com/zirgudaga)
+
 ## Démarrage
 
 Les instructions suivantes vous permettrons d'installer le projet :

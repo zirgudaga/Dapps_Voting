@@ -119,6 +119,8 @@ class App extends Component {
 
     listVoters = [];
     listProposals = [];
+    listProposalsRefused = []; 
+    listVotersHasVoted = [];
 
     contract.getPastEvents('allEvents', {
       fromBlock: 0,
@@ -169,7 +171,7 @@ class App extends Component {
 
         }
       }
-      context.setState({ listVoters, listProposals, listVotersHasVoted});  
+      context.setState({ listVoters, listProposals, listVotersHasVoted, listProposalsRefused});  
     });
 
     contractSessionId = parseInt(await contract.methods.sessionId().call(), 10);

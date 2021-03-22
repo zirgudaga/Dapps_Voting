@@ -15,7 +15,7 @@ Les instructions suivantes vous permettrons d'installer le projet :
 
 ## Guide d'utilisation
 
-Vous trouverez une vidéo de présentation du projet sur l'URL suivant : [Vidéo de démo](https://www.youtube.com/watch?v=7WBrRZMVOw8)
+Vous trouverez une vidéo de présentation du projet sur l'URL suivant : [Vidéo de démo](https://www.youtube.com/watch?v=IH6rcTJsz1s)
 
 
 ## Scénario du projet

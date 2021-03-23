@@ -227,11 +227,11 @@ contract Voting is Ownable {
     function votesTallied() external onlyOwner {
         require(currentStatus == WorkflowStatus.VotingSessionEnded, "Session is still ongoing");
         
-        currentStatus = WorkflowStatus.VotesTallied;
-        
         uint16 currentWinnerId;
         uint16 nbVotesWinner;
         uint16 totalVotes;
+
+        currentStatus = WorkflowStatus.VotesTallied;
 
         for(uint16 i; i<proposals.length; i++){
             if (proposals[i].voteCount > nbVotesWinner){

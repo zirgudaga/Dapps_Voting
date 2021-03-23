@@ -197,8 +197,8 @@ contract Voting is Ownable {
      * @param _votedProposalId index of proposal to vote
      */
     function addVote(uint16 _votedProposalId) external {
+        require(currentStatus == WorkflowStatus.VotingSessionStarted, "It is not time to vote!");        
         require(voters[msg.sender].isRegistered, "Voter can not vote");
-        require(currentStatus == WorkflowStatus.VotingSessionStarted, "It is not time to vote!");
         require(!voters[msg.sender].hasVoted, "Voter has already vote");        
         require(proposals[_votedProposalId].isActive, "Proposition inactive");      
 

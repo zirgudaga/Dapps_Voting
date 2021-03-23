@@ -213,7 +213,7 @@ contract Voting is Ownable {
      * @dev Change status to VotingSessionEnded
      */ 
     function votingSessionEnded() external onlyOwner{
-        require(currentStatus == WorkflowStatus.VotingSessionStarted, "Not ProposalsRegistrationEnded Status");
+        require(currentStatus == WorkflowStatus.VotingSessionStarted, "Not VotingSessionStarted Status");
         
         currentStatus = WorkflowStatus.VotingSessionEnded;
         
@@ -289,7 +289,7 @@ contract Voting is Ownable {
      * @param deleteVoters delete voters
      * @notice Feature_V2  
      */ 
-    function restartSession (bool deleteVoters) external {
+    function restartSession (bool deleteVoters) external onlyOwner{
         require(currentStatus == WorkflowStatus.VotesTallied, "Tallied not finished"); 
   
         delete(proposals);

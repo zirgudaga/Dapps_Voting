@@ -231,15 +231,15 @@ contract('proposalSessionEnded', function (accounts) {
       this.Voting = await Voting.new({from: owner});
     });
   
+    async function addVoterAddProposal(myVoting, _voter1, _proposal1){
+      await myVoting.addVoter(_voter1, true, {from: owner});
+      await myVoting.proposalSessionBegin({from: owner}); 
+      await myVoting.addProposal(_proposal1, {from: voter1});
+      await myVoting.proposalSessionEnded({from: owner});
+    }
+
     it('addVote OK', async function () { 
-      // On procède à l'ajout d'un voter
-      await this.Voting.addVoter(voter1, true, {from: owner});
-     
-      await this.Voting.proposalSessionBegin({from: owner}); 
-      
-      // On procède à l'ajout d'une proposition
-      await this.Voting.addProposal(proposal1, {from: voter1});
-      await this.Voting.proposalSessionEnded({from: owner});
+      await addVoterAddProposal(this.Voting, voter1, proposal1);
 
       // On procède à l'ajout d'un vote sur la proposition 1
       await this.Voting.votingSessionStarted({from: owner});
@@ -247,7 +247,7 @@ contract('proposalSessionEnded', function (accounts) {
            
       // On vérifie que le voter1 a bien voté
       let voter1AfterTheVote = await this.Voting.voters(voter1);
-      expect(voter1AfterTheVote.votedProposalId).to.equal('1');      
+      expect(voter1AfterTheVote.votedProposalId).to.be.bignumber.equal('1');      
       expect(voter1AfterTheVote.hasVoted).to.equal(true);
 
       // On vérifie que la proposition1 a bien 1 vote  
@@ -276,36 +276,18 @@ contract('proposalSessionEnded', function (accounts) {
       await (expectRevert(this.Voting.addVote('1', {from: voter1}), "It is not time to vote!"));
     });  
   
-    // TODO :  Ceci ne test rien ^^
     it('proposal is active', async function () { 
-      await this.Voting.addVoter(voter1, true, {from: owner});
-     
-      await this.Voting.proposalSessionBegin({from: owner}); 
-      await this.Voting.addProposal(proposal1, {from: voter1});
-      await this.Voting.proposalSessionEnded({from: owner});
+      await addVoterAddProposal(this.Voting, voter1, proposal1);
       await this.Voting.removeProposal('1', {from: owner});
-      
-      let proposal1AfterInactive = await this.Voting.proposals('1');
-      expect(proposal1AfterInactive.isActive).to.equal(false);
+      await this.Voting.votingSessionStarted({from: owner});
 
-      
+      await (expectRevert(this.Voting.addVote('1', {from: voter1}), "Proposition inactive"));
     }); 
   
     it('Voter has already vote', async function () {
-      await this.Voting.addVoter(voter1, true, {from: owner});
-      
-      await this.Voting.proposalSessionBegin({from: owner}); 
-
-      await this.Voting.addProposal(proposal1, {from: voter1});
-      await this.Voting.proposalSessionEnded({from: owner});
-  
+      await addVoterAddProposal(this.Voting, voter1, proposal1);
       await this.Voting.votingSessionStarted({from: owner});
       await this.Voting.addVote('1', {from: voter1});
-  
-      /////////// RETIRER ///////////
-      let voter1AfterTheVote = await this.Voting.voters(voter1);
-      expect(voter1AfterTheVote.hasVoted).to.equal(true);
-      //////////////////////////////
   
       await (expectRevert(this.Voting.addVote('1', {from: voter1}), "Voter has already vote"));
     }); 

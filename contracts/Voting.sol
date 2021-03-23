@@ -282,9 +282,6 @@ contract Voting is Ownable {
             sessions[_sessionId].nbVotes,
             sessions[_sessionId].totalVotes
         );
-
-
-
     }
     
     /**

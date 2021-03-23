@@ -102,7 +102,7 @@ contract Voting is Ownable {
      */
     function addVoter(address _addressVoter, bool _isAbleToPropose) external onlyOwner{
         require(currentStatus == WorkflowStatus.RegisteringVoters, "Not RegisteringVoters Status");        
-        require(!voters[_addressVoter].isRegistered, "Voter already registred");
+        require(!voters[_addressVoter].isRegistered, "Voter already registered");
 
         voters[_addressVoter] = Voter(true, false, 0, _isAbleToPropose, false);
         addressToSave.push(_addressVoter);
@@ -116,7 +116,7 @@ contract Voting is Ownable {
      */
     function removeVoter(address _addressVoter) external onlyOwner{
         require(currentStatus == WorkflowStatus.RegisteringVoters, "Not RegisteringVoters Status");        
-        require(voters[_addressVoter].isRegistered, "Voter not registred");
+        require(voters[_addressVoter].isRegistered, "Voter not registered");
         
         voters[_addressVoter].isRegistered = false;
 
@@ -143,7 +143,7 @@ contract Voting is Ownable {
      */
     function addProposal(string memory _content) external {
         require(currentStatus == WorkflowStatus.ProposalsRegistrationStarted, "Not ProposalsRegistrationStarted Status");
-        require(voters[msg.sender].isRegistered, "Voter not registred");
+        require(voters[msg.sender].isRegistered, "Voter not registered");
         require(voters[msg.sender].isAbleToPropose, "Voter not proposer");
         require(!voters[msg.sender].hasProposed, "Voter has already proposed");
 

@@ -69,8 +69,8 @@ contract Voting is Ownable {
     event VoterUnRegistered(address voterAddress, uint sessionId);                                              // Feature_V2     
     event ProposalsRegistrationStarted(uint sessionId);
     event ProposalsRegistrationEnded(uint sessionId);
-    event ProposalRegistered(uint proposalId, string proposal, address owner, uint sessionId);
-    event ProposalUnRegistered(uint proposalId, string proposal, address owner, uint sessionId);                                                // Feature_V2    
+    event ProposalRegistered(uint proposalId, string proposal, address author, uint sessionId);
+    event ProposalUnRegistered(uint proposalId, string proposal, address author, uint sessionId);                                                // Feature_V2    
     event VotingSessionStarted(uint sessionId);
     event VotingSessionEnded(uint sessionId);
     event Voted (address voter, uint proposalId, uint sessionId);

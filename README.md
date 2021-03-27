@@ -13,13 +13,16 @@
 Les instructions suivantes vous permettrons d'installer le projet :
 - Afin de cloner le projet, entrez la ligne de commande suivante : 
 ```npm clone https://github.com/zirgudaga/Dapps_Voting```
-- Pour lancer le déploiement de la Dapps, modifiez le fichier truffle-config.js avec le network approprié
-- Lancez ensuite la migration avec la commande : 
-```truffle migrate --network 'votre network'```
 - Afin d'installer les dépendances de test et de solidity, dans le dossier racince du projet, effectuez la commande : 
 ```npm install ```
 - Afin d'installer les dépendances react, dans le dossier client du projet, effectuez la commande : 
 ```npm install```
+- Pour lancer le déploiement de la Dapps, modifiez le fichier truffle-config.js avec le network approprié
+- Pour déployer hors ganache, pensez à renseigner dans un fichier .env les variables environnement suivante :
+```MNEMONIC```
+```INFURA_ID```
+- Lancez ensuite la migration avec la commande : 
+```truffle migrate --network 'votre network'```
 - Effectuez ensuite la commande suivante dans le dossier client : 
 ```npm run start```
 - Rendez-vous sur votre http://localhost:3000/ pour interagir avec votre contrat
@@ -28,6 +31,8 @@ Les instructions suivantes vous permettrons d'installer le projet :
 
 Vous trouverez une vidéo de présentation du projet sur l'URL suivant : [Vidéo de démo](https://www.youtube.com/watch?v=IH6rcTJsz1s)
 
+Il existe une exemple deployé sur Ropsten ici :
+```0xC263BB17b83f017673fF601fb15D796F1eaDef55```
 
 ## Scénario du projet
 
@@ -69,7 +74,13 @@ Le gagnant est déterminé à la majorité simple ; la proposition qui obtient l
 
 Livré  🚀
 
-### Remix & Visual Studio Code  🖥️
+### Visual Studio Code  🖥️
+
+### Langage : Solidy, JS
+
+### Framework : Truffle unbox React 
+
+### Network : Ganache, Ropsten
 
 ## Contraintes
 

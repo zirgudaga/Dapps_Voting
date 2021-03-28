@@ -20,7 +20,7 @@ export default class VoterInterface extends React.Component {
           if(tx){
             await web3.eth.getTransactionReceipt(tx, 
               async (erreur, receipt) => {
-                if(receipt.status){
+                if(receipt!=null && receipt.status){
                   this.setState({notice: 'Proposition ajoutée'});
                   setTimeout(() => this.setState({notice: ''}), 5000);
                   this.newPropal.value = "";
@@ -40,7 +40,7 @@ export default class VoterInterface extends React.Component {
         if(tx){
           await web3.eth.getTransactionReceipt(tx, 
             async (erreur, receipt) => {
-              if(receipt.status){
+              if(receipt!=null && receipt.status){
                 this.setState({notice: 'Vote enregistré'});
                 setTimeout(() => this.setState({notice: ''}), 5000);
               }

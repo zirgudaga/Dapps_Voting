@@ -47,6 +47,8 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
+      console.log("Adresse contract : ", deployedNetwork.address)
+
       let isOwner = false;
       let myOwner = await contract.methods.owner().call();
       if(myOwner === accounts[0]){
@@ -143,17 +145,17 @@ class App extends Component {
           if (myEvent.event === 'ProposalRegistered'){
             addToList(listProposals, 
               { 
-                key: myEvent.returnValues.owner, 
+                key: myEvent.returnValues.author, 
                 idToSend: myEvent.returnValues.proposalId, 
                 content: myEvent.returnValues.proposal
               }
             );
           }          
           if (myEvent.event === 'ProposalUnRegistered'){
-            removeToList(listProposals, myEvent.returnValues.owner);
+            removeToList(listProposals, myEvent.returnValues.author);
             addToList(listProposalsRefused, 
               { 
-                key: myEvent.returnValues.owner, 
+                key: myEvent.returnValues.author, 
                 idToSend: myEvent.returnValues.proposalId, 
                 content: myEvent.returnValues.proposal
               }

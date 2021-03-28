@@ -21,7 +21,7 @@ export default class AdminInterface extends React.Component {
           if(tx){
             await web3.eth.getTransactionReceipt(tx, 
               async (erreur, receipt) => {
-                if(receipt.status){
+                if(receipt!=null && receipt.status){
                   this.setState({notice: 'Electeur ajouté'});
                   setTimeout(() => this.setState({notice: ''}), 5000);
                   this.newVoter.value = "";
@@ -42,7 +42,7 @@ export default class AdminInterface extends React.Component {
         if(tx){
           await web3.eth.getTransactionReceipt(tx, 
             async (erreur, receipt) => {
-              if(receipt.status){
+              if(receipt!=null && receipt.status){
                 this.setState({notice: 'Electeur supprimé'});
                 setTimeout(() => this.setState({notice: ''}), 5000);
               }
@@ -60,7 +60,7 @@ export default class AdminInterface extends React.Component {
         if(tx){
           await web3.eth.getTransactionReceipt(tx, 
             async (erreur, receipt) => {
-              if(receipt.status){
+              if(receipt!=null && receipt.status){
                 this.setState({notice: 'Proposition supprimé'});
                 setTimeout(() => this.setState({notice: ''}), 5000);
               }

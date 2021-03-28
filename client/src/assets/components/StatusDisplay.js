@@ -56,7 +56,7 @@ export default class StatusDisplay extends React.Component {
       if(tx){
         await web3.eth.getTransactionReceipt(tx, 
           async (erreur, receipt) => {
-            if(receipt.status){
+            if(receipt!=null && receipt.status){
               await context.goToNewSession();
             }
           }

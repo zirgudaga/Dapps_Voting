@@ -34,6 +34,8 @@ Vous trouverez une vidéo de présentation du projet sur l'URL suivant : [Vidéo
 Il existe une exemple deployé sur Ropsten ici :
 ```0xC263BB17b83f017673fF601fb15D796F1eaDef55```
 
+Vous avez une version Heroku en ligne [ici](https://voting-dapps-v1.herokuapp.com/)
+
 ## Scénario du projet
 
 📌  Un smart contract de vote peut être simple ou complexe, selon les exigences des élections que vous souhaitez soutenir. Le vote peut porter sur un petit nombre de propositions (ou de candidats) présélectionnées, ou sur un nombre potentiellement important de propositions suggérées de manière dynamique par les électeurs eux-mêmes.

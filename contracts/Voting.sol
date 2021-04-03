@@ -1,8 +1,8 @@
 // SPDX-License-Identifier:  GPL-3.0
-pragma solidity >=0.4.21 <=0.7.4;
+pragma solidity >=0.4.21 <=0.8;
  
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title Voting
